@@ -1,7 +1,7 @@
 import logging
 import unittest
 
-from dataforge.dataforge import *
+from dataforge import *
 
 
 class TestDFUInt8(unittest.TestCase):
@@ -31,14 +31,14 @@ class TestDFUInt8(unittest.TestCase):
 
 class TestDFSInt8(unittest.TestCase):
     def test(self):
-        d = DFUInt8(value=-1)
+        d = DFSInt8(value=-1)
         self.assertTrue(b"\xff" == d.pack())
 
-        d = DFUInt8(value=b"\xaa")
-        self.assertTrue(b"\xaa" == d.pack())
+        d = DFSInt8(value=b"\x7f")
+        self.assertTrue(b"\x7f" == d.pack())
 
         try:
-            d = DFUInt8(value=b"abc")
+            d = DFSInt8(value=b"abc")
         except Exception as e:
             self.assertTrue(True)
         else:
@@ -145,6 +145,12 @@ class TestDFUInt32(unittest.TestCase):
         #     self.assertTrue( False )
 
         self.assertTrue(d.length == 4)
+
+
+class TestDFSInt32(unittest.TestCase):
+    def test(self):
+        d = DFSInt32(value=-1)
+        self.assertTrue(b"\xff\xff\xff\xff" == d.pack())
 
 
 class TestDFContainer(unittest.TestCase):

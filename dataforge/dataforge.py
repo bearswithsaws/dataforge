@@ -1,6 +1,5 @@
-#!/usr/bin/env python3
-
-# DataForge package
+"""DataForge package
+"""
 
 import abc
 import binascii
@@ -11,39 +10,63 @@ from enum import Enum
 
 
 class DFEndian(Enum):
+    """DFEndian
+
+    Args:
+        Enum (int): Endian
+    """
+
     LITTLE = 1
     BIG = 2
 
 
 class DFRangeException(Exception):
-    """DFRangeException"""
+    """DFRangeException
 
-    pass
+    Args:
+        Exception: Out of range
+    """
+
+    def __init__(self, *args, **kwargs):
+        Exception.__init__(self, *args, **kwargs)
 
 
 class DFEndianException(Exception):
-    """DFEndianException"""
+    """DFEndianException
 
-    pass
+    Args:
+        Exception: DFEndianException
+    """
+
+    def __init__(self, *args, **kwargs):
+        Exception.__init__(self, *args, **kwargs)
 
 
-class DFTypeException(object):
-    """docstring for DFTypeException"""
+class DFTypeException(Exception):
+    """DFTypeException
 
-    pass
+    Args:
+        Exception: DFTypeException
+    """
+
+    def __init__(self, *args, **kwargs):
+        Exception.__init__(self, *args, **kwargs)
 
 
 class DFBasicDataType(abc.ABC):
+    """DFBasicDataType
+
+    Abstract base class for all data types
+    """
+
     def __init__(self):
         pass
 
     @property
-    @abc.abstractmethod
     def value(self):
         pass
 
     @value.setter
-    @abc.abstractmethod
     def value(self, value):
         pass
 
@@ -51,12 +74,15 @@ class DFBasicDataType(abc.ABC):
     def pack(self):
         pass
 
-    @abc.abstractmethod
+    @property
     def length(self):
         pass
 
 
 class DFUInt8(DFBasicDataType):
+    """Unsigned int 8-bi
+    t"""
+
     def __init__(self, value=0):
         self._fmt = "B"
         self._width = 1
@@ -88,21 +114,23 @@ class DFUInt8(DFBasicDataType):
         return self.pretty_print()
 
     def pretty_print(self, indent=0):
-        return " " * indent + "|- " + "Unsigned Byte 0x{0:02X}".format(self.value)
+        return " " * indent + "|- " + f"Unsigned Byte 0x{self.value:02X}"
 
 
 class DFSInt8(DFUInt8):
-    """docstring for DFSInt8"""
+    """Signed int 8-bit"""
 
     def __init__(self, **kwargs):
-        super(DFSInt8, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self._fmt = "b"
 
     def pretty_print(self, indent=0):
-        return " " * indent + "|- " + "Signed Byte 0x{0:02X}".format(self.value)
+        return " " * indent + "|- " + f"Signed Byte 0x{self.value:02X}"
 
 
 class DFUInt16(DFBasicDataType):
+    """Unsigned int 16-bit"""
+
     def __init__(self, value=0, endian=DFEndian.LITTLE):
         if endian == DFEndian.LITTLE:
             self._endian = "<"
@@ -138,21 +166,23 @@ class DFUInt16(DFBasicDataType):
         return self.pretty_print()
 
     def pretty_print(self, indent=0):
-        return " " * indent + "|- " + "Unsigned Short 0x{0:04X}".format(self.value)
+        return " " * indent + "|- " + f"Unsigned Short 0x{self.value:04X}"
 
 
 class DFSInt16(DFUInt16):
     """docstring for DFSInt16"""
 
     def __init__(self, **kwargs):
-        super(DFSInt16, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self._fmt = "h"
 
     def pretty_print(self, indent=0):
-        return " " * indent + "|- " + "Signed Short 0x{0:04X}".format(self.value)
+        return " " * indent + "|- " + f"Signed Short 0x{self.value:04X}"
 
 
 class DFUInt32(DFBasicDataType):
+    """Unsigned int 32-bit"""
+
     def __init__(self, value=0, endian=DFEndian.LITTLE):
         if endian == DFEndian.LITTLE:
             self._endian = "<"
@@ -170,7 +200,7 @@ class DFUInt32(DFBasicDataType):
 
     @value.setter
     def value(self, val):
-        if type(val) == int:
+        if isinstance(val, int):
             self._value = val & 0xFFFFFFFF
         else:
             if len(val) > 4:
@@ -188,21 +218,23 @@ class DFUInt32(DFBasicDataType):
         return self.pretty_print()
 
     def pretty_print(self, indent=0):
-        return " " * indent + "|- " + "Unsigned Long 0x{0:08X}".format(self.value)
+        return " " * indent + "|- " + f"Unsigned Long 0x{self.value:08X}"
 
 
 class DFSInt32(DFUInt32):
     """docstring for DFSInt32"""
 
     def __init__(self, **kwargs):
-        super(DFSInt32, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self._fmt = "i"
 
     def pretty_print(self, indent=0):
-        return " " * indent + "|- " + "Signed Long 0x{0:08X}".format(self.value)
+        return " " * indent + "|- " + f"Signed Long 0x{self.value:08X}"
 
 
 class DFBuffer(DFBasicDataType):
+    """Buffer data type"""
+
     def __init__(self, value=b""):
         self._value = value
         self._width = len(self._value)
@@ -226,10 +258,10 @@ class DFBuffer(DFBasicDataType):
             raise DFTypeException("DFBuffer must be type: bytes")
 
     def pretty_print(self, indent=0):
-        shortVal = str(binascii.hexlify(self.pack()))
+        short_val = str(binascii.hexlify(self.pack()))
         if self.length > 10:
-            shortVal = str(binascii.hexlify(self.pack()[:10])) + "..."
-        return " " * indent + "|- " + "Buffer {0}".format(shortVal)
+            short_val = str(binascii.hexlify(self.pack()[:10])) + "..."
+        return " " * indent + "|- " + f"Buffer {short_val}"
 
 
 # is a container a basic data type or its own thing?
@@ -240,25 +272,31 @@ class DFContainer(DFBasicDataType):
         self._children = OrderedDict()
         self._name = None
 
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        self._name = name
+
     def add(self, name, obj):
         root = name
-        subContainer = None
+        sub_container = None
         logging.debug(name)
         if "." in root:
-            root, subContainer = root.split(".", 1)
-        logging.debug("{0} : {1}".format(root, subContainer))
-        logging.debug(
-            "Adding {0} to {1} (sub: {2})".format(type(obj), root, subContainer)
-        )
-        if root is not None and subContainer is None and isinstance(obj, DFContainer):
-            logging.debug("SETTING NAME!!! {0}".format(subContainer))
-            obj._name = root
-        if root in iter(self._children) and subContainer is not None:
+            root, sub_container = root.split(".", 1)
+        logging.debug("%s : %s", root, sub_container)
+        logging.debug("Adding %s to %s (sub: %s)", type(obj), root, sub_container)
+        if root is not None and sub_container is None and isinstance(obj, DFContainer):
+            logging.debug("SETTING NAME!!! %s", sub_container)
+            obj.name = root
+        if root in iter(self._children) and sub_container is not None:
             # Recurse
-            logging.debug("{0} in children for this container".format(root))
-            self._children[root].add(subContainer, obj)
+            logging.debug("%s in children for this container", root)
+            self._children[root].add(sub_container, obj)
         else:
-            logging.debug("New child, Setting {0} to {1}".format(root, obj))
+            logging.debug("New child, Setting %s to %s", root, obj)
             self._children[root] = obj
 
         return self
@@ -266,26 +304,26 @@ class DFContainer(DFBasicDataType):
     def __getattribute__(self, name):
         if name != "_children" and name in self._children.keys():
             return self._children[name]
-        else:
-            return super(DFContainer, self).__getattribute__(name)
+
+        return super().__getattribute__(name)
 
     def __setattr__(self, name, obj):
         if isinstance(obj, DFBasicDataType) and not name.startswith(
             "_"
         ):  # Or whatever a container is?
-            logging.debug("SETTER: {0}".format(name))
+            logging.debug("SETTER: %s", name)
             self.add(name, obj)
         else:
-            super(DFBasicDataType, self).__setattr__(name, obj)
+            super().__setattr__(name, obj)
 
     @property
     def length(self):
         return len(repr(self))
 
     # Does value make sense? Does this show we need another basic class type?
-    @property
-    def value(self, value):
-        pass
+    # @property
+    # def value(self, value):
+    #     pass
 
     def _get_children(self):
         """Returns a copy of its children"""
@@ -309,32 +347,34 @@ class DFContainer(DFBasicDataType):
         return self.pretty_print()
 
     def pretty_print(self, indent=0):
-        ret = " " * indent + "+{0}\n".format(self._name)
+        ret = " " * indent + f"+{self.name}\n"
         for child in self._children:
-            logging.debug("current child: {0} ({1})".format(child, indent))
+            logging.debug("current child: %s (%s)", child, indent)
             if isinstance(self._children[child], DFContainer):
                 ret += "|" + self._children[child].pretty_print(indent + 1)
             else:
                 ret += (
                     "|"
                     + self._children[child].pretty_print(indent + 1)
-                    + " : {0} ".format(child)
+                    + f" : {child} "
                     + "\n"
                 )
         return ret
 
 
 class DFLength(DFContainer):
+    """Length counted container"""
+
     def __init__(self, field, container):
-        super(DFLength, self).__init__()
+        super().__init__()
         self._field = field
         self._children["_data"] = container
 
     def __getattribute__(self, name):
         if name != "_children" and name in self._children["_data"]._children.keys():
             return self._children["_data"]._children[name]
-        else:
-            return super(DFContainer, self).__getattribute__(name)
+
+        return super(DFContainer, self).__getattribute__(name)
 
     def __setattr__(self, name, obj):
         if isinstance(obj, DFBasicDataType) and not name.startswith("_"):
@@ -372,9 +412,9 @@ class DFLength(DFContainer):
         return self.pretty_print()
 
     def pretty_print(self, indent=0):
-        ret = " " * indent + "+{0} length: 0x{1:0x}\n".format(self._name, self.value)
+        ret = " " * indent + f"+{self.name} length: 0x{self.value:0x}\n"
         for child in self._children["_data"]._children:
-            logging.debug("current child: {0} ({1})".format(child, indent))
+            logging.debug("current child: %s (%s)", child, indent)
             if isinstance(self._children["_data"]._children[child], DFContainer):
                 ret += "|" + self._children["_data"]._children[child].pretty_print(
                     indent + 1
@@ -383,7 +423,7 @@ class DFLength(DFContainer):
                 ret += (
                     "|"
                     + self._children["_data"]._children[child].pretty_print(indent + 1)
-                    + " : {0} ".format(child)
+                    + f" : {child} "
                     + "\n"
                 )
         return ret
