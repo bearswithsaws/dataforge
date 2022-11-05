@@ -17,4 +17,5 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pylint."MESSAGE CONTROL"]
-disable = "C0116,R0902"
+# W0212: Access to a protected member, resolve this at some point
+disable = "C0116,R0902,W0212"

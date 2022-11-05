@@ -8,6 +8,8 @@ import struct
 from collections import OrderedDict
 from enum import Enum
 
+from .exceptions import DFEndianException, DFRangeException, DFTypeException
+
 
 class DFEndian(Enum):
     """DFEndian
@@ -18,39 +20,6 @@ class DFEndian(Enum):
 
     LITTLE = 1
     BIG = 2
-
-
-class DFRangeException(Exception):
-    """DFRangeException
-
-    Args:
-        Exception: Out of range
-    """
-
-    def __init__(self, *args, **kwargs):
-        Exception.__init__(self, *args, **kwargs)
-
-
-class DFEndianException(Exception):
-    """DFEndianException
-
-    Args:
-        Exception: DFEndianException
-    """
-
-    def __init__(self, *args, **kwargs):
-        Exception.__init__(self, *args, **kwargs)
-
-
-class DFTypeException(Exception):
-    """DFTypeException
-
-    Args:
-        Exception: DFTypeException
-    """
-
-    def __init__(self, *args, **kwargs):
-        Exception.__init__(self, *args, **kwargs)
 
 
 class DFBasicDataType(abc.ABC):
