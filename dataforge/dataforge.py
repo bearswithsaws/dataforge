@@ -90,8 +90,8 @@ class DFSInt8(DFUInt8):
     """Signed int 8-bit"""
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
         self._fmt = "b"
+        super().__init__(**kwargs)
 
     def pretty_print(self, indent=0):
         return " " * indent + "|- " + f"Signed Byte 0x{self.value:02X}"
@@ -142,8 +142,8 @@ class DFSInt16(DFUInt16):
     """docstring for DFSInt16"""
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
         self._fmt = "h"
+        super().__init__(**kwargs)
 
     def pretty_print(self, indent=0):
         return " " * indent + "|- " + f"Signed Short 0x{self.value:04X}"
@@ -194,8 +194,8 @@ class DFSInt32(DFUInt32):
     """docstring for DFSInt32"""
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
         self._fmt = "i"
+        super().__init__(**kwargs)
 
     def pretty_print(self, indent=0):
         return " " * indent + "|- " + f"Signed Long 0x{self.value:08X}"

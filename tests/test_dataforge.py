@@ -20,12 +20,9 @@ class TestDFUInt8(unittest.TestCase):
         with self.assertRaises(DFRangeException):
             DFUInt8(value=b"abc")
 
-        # try:
-        #     df_test = DFUInt8( value=0x100 )
-        # except Exception:
-        #     self.assertTrue( True )
-        # else:
-        #     self.assertTrue( False )
+        # Test that too large of a value is truncated
+        df_test = DFUInt8(value=0x105)
+        self.assertTrue(b"\x05" == df_test.pack())
 
         self.assertTrue(df_test.length == 1)
 
@@ -43,12 +40,9 @@ class TestDFSInt8(unittest.TestCase):
         with self.assertRaises(DFRangeException):
             df_test = DFSInt8(value=b"abc")
 
-        # try:
-        #     df_test = DFUInt8( value=0x100 )
-        # except Exception:
-        #     self.assertTrue( True )
-        # else:
-        #     self.assertTrue( False )
+        # Test that too large of a value is truncated
+        df_test = DFSInt8(value=-0x105)
+        self.assertTrue(b"\xfb" == df_test.pack())
 
         self.assertTrue(df_test.length == 1)
 
@@ -69,15 +63,15 @@ class TestDFUInt16(unittest.TestCase):
         df_test = DFUInt16(value=b"\xbb\xaa", endian=DFEndian.BIG)
         self.assertTrue(b"\xaa\xbb" == df_test.pack())
 
+        df_test = DFUInt16(value=1, endian=DFEndian.LITTLE)
+        self.assertTrue(b"\x01\x00" == df_test.pack())
+
         with self.assertRaises(DFRangeException):
             df_test = DFUInt16(value=b"abcd")
 
-        # try:
-        #     df_test = DFUInt16( value=0x10000 )
-        # except Exception:
-        #     self.assertTrue( True )
-        # else:
-        #     self.assertTrue( False )
+        # Test that too large of a value is truncated
+        df_test = DFUInt16(value=0x100000005)
+        self.assertTrue(b"\x05\x00" == df_test.pack())
 
         self.assertTrue(df_test.length == 2)
 
@@ -101,12 +95,9 @@ class TestDFSInt16(unittest.TestCase):
         with self.assertRaises(DFRangeException):
             df_test = DFSInt16(value=b"abcd")
 
-        # try:
-        #     df_test = DFSInt16( value=0x10000 )
-        # except Exception:
-        #     self.assertTrue( True )
-        # else:
-        #     self.assertTrue( False )
+        # Test that too large of a value is truncated
+        df_test = DFSInt16(value=-0x10005)
+        self.assertTrue(b"\xfb\xff" == df_test.pack())
 
         self.assertTrue(df_test.length == 2)
 
@@ -130,12 +121,9 @@ class TestDFUInt32(unittest.TestCase):
         with self.assertRaises(DFRangeException):
             df_test = DFUInt32(value=b"abcdef")
 
-        # try:
-        #     df_test = DFUInt32( value=0x100000000 )
-        # except Exception:
-        #     self.assertTrue( True )
-        # else:
-        #     self.assertTrue( False )
+        # Test that too large of a value is truncated
+        df_test = DFUInt32(value=0x100000005)
+        self.assertTrue(b"\x05\x00\x00\x00" == df_test.pack())
 
         self.assertTrue(df_test.length == 4)
 
@@ -146,6 +134,10 @@ class TestDFSInt32(unittest.TestCase):
     def test(self):
         df_test = DFSInt32(value=-1)
         self.assertTrue(b"\xff\xff\xff\xff" == df_test.pack())
+
+        # Test that too large of a value is truncated
+        df_test = DFSInt32(value=-0x100000005)
+        self.assertTrue(b"\xfb\xff\xff\xff" == df_test.pack())
 
 
 class TestDFContainer(unittest.TestCase):
