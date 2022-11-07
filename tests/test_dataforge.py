@@ -218,7 +218,6 @@ class TestDFContainerShorthand(unittest.TestCase):
         df_test.add("sub.another_sub.sub_item2", DFUInt8(value=2))
         df_test.add("sub.test.sub_sub", DFContainer())
         df_test.add("sub.test.sub_sub.deep_value", DFUInt32(value=0xEEFF))
-        print(df_test.pack())
 
 
 class TestDFLength(unittest.TestCase):
@@ -242,9 +241,8 @@ class TestPrint(unittest.TestCase):
     """Test pretty-print"""
 
     def test(self):
-        logging.basicConfig(level=logging.WARN)
         df_test = DFUInt8(value=0x41)
-        logging.debug(df_test)
+        print(df_test)
 
         df_test = DFContainer()
         df_test.test = DFUInt32(value=0x1337)
@@ -258,7 +256,7 @@ class TestPrint(unittest.TestCase):
         df_test.sub.test.deep_value = DFUInt32(value=1337)
         df_test.sub.test.sub_sub = DFContainer()
         df_test.sub.test.sub_sub.deep_value = DFUInt32(value=1337)
-        logging.debug(df_test)
+        print(df_test)
         print(df_test.pack())
 
         print("")
@@ -272,7 +270,7 @@ class TestPrint(unittest.TestCase):
         df_test.add("sub.another_sub.sub_item2", DFUInt8(value=2))
         df_test.add("sub.test.sub_sub", DFContainer())
         df_test.add("sub.test.sub_sub.deep_value", DFUInt32(value=0xEEFF))
-        logging.debug(df_test)
+        print(df_test)
         print(df_test.pack())
 
         df_test = DFContainer()
@@ -288,7 +286,7 @@ class TestPrint(unittest.TestCase):
         df_test.sub.test.sub_sub = DFContainer()
         df_test.sub.test.sub_sub.deep_value = DFUInt32(value=1337)
         df_test.sub.buf = DFBuffer(value=b"A" * 100)
-        logging.debug(df_test)
+        print(df_test)
         print(df_test.pack())
 
 
