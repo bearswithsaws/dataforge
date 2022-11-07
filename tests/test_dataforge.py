@@ -1,6 +1,5 @@
 """DataForge test suite
 """
-import logging
 import unittest
 
 from dataforge import *  # pylint: disable=W0401
