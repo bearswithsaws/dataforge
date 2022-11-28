@@ -236,6 +236,44 @@ class TestDFLength(unittest.TestCase):
         self.assertTrue(b"\x00\x05\xdd\xcc\xbb\xaa\x0a" == df_test.pack())
 
 
+class TestDFLengthRef(unittest.TestCase):
+    """Test length-counted container"""
+
+    def test(self):
+        df_test = DFContainer()
+        df_test.len = DFLengthRef(DFUInt16(), "len_data")
+        df_test.len_data = DFContainer()
+        df_test.len_data.data = DFUInt32(value=0xAABBCCDD)
+        df_test.len_data.data2 = DFUInt8(value=10)
+        print(df_test.pretty_print())
+        print(df_test.pack())
+        self.assertTrue(b"\x05\x00\xdd\xcc\xbb\xaa\x0a" == df_test.pack())
+
+        df_test = DFContainer()
+        df_test.len = DFLengthRef(DFUInt16(endian=DFEndian.BIG), "len_data")
+        df_test.len_data = DFContainer()
+        df_test.len_data.data = DFUInt32(value=0xAABBCCDD)
+        df_test.len_data.data2 = DFUInt8(value=10)
+        self.assertTrue(b"\x00\x05\xdd\xcc\xbb\xaa\x0a" == df_test.pack())
+
+        df_test = DFContainer()
+        df_test.something = DFUInt8(value=0x11)
+        df_test.sub1 = DFContainer()
+        df_test.sub1.thing1 = DFUInt16(value=7)
+        df_test.sub1.len = DFLengthRef(DFUInt16(), "sub1.sub2.len_data")
+        df_test.sub1.thing2 = DFUInt32(value=9)
+        df_test.sub1.sub2 = DFContainer()
+        df_test.sub1.sub2.len_data = DFContainer()
+        df_test.sub1.sub2.len_data.data = DFUInt32(value=0xAABBCCDD)
+        df_test.sub1.sub2.len_data.data2 = DFUInt8(value=10)
+        print(df_test.pretty_print())
+        print(df_test.pack())
+        self.assertTrue(
+            b"\x11\x07\x00\x05\x00\x09\x00\x00\x00\xdd\xcc\xbb\xaa\x0a"
+            == df_test.pack()
+        )
+
+
 class TestPrint(unittest.TestCase):
     """Test pretty-print"""
 
