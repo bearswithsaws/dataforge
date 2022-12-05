@@ -417,18 +417,6 @@ class DFLengthRef(DFContainer):
         self._ref = container_ref
         # self._children["_data"] = container_ref
 
-    # def __getattribute__(self, name):
-    #     if name != "_children" and name in self._children["_data"]._children.keys():
-    #         return self._children["_data"]._children[name]
-
-    #     return super(DFContainer, self).__getattribute__(name)
-
-    # def __setattr__(self, name, obj):
-    #     if isinstance(obj, DFBasicDataType) and not name.startswith("_"):
-    #         self.add("_data." + name, obj)
-    #     else:
-    #         super(DFContainer, self).__setattr__(name, obj)
-
     def _get_root(self, obj) -> DFBasicDataType:
         if obj.parent is None:
             return obj
@@ -462,6 +450,52 @@ class DFLengthRef(DFContainer):
 
     def pretty_print(self, indent=0):
         ret = " " * indent + f"+{self.name} length: 0x{self.value:0x}\n"
+
+        return ret
+
+
+class DFCallableRef(DFContainer):
+    """Compute a field based on a reference to a branch and a callable"""
+
+    def __init__(self, field, func, container_ref):
+        super().__init__()
+        self._field = field
+        self._func = func
+        self._ref = container_ref
+
+    def _get_root(self, obj) -> DFBasicDataType:
+        if obj.parent is None:
+            return obj
+        else:
+            return self._get_root(obj.parent)
+
+    def _get_children(self):
+        """Returns children of the branch referred to"""
+        root = self._get_root(self)
+        # a.b.c -> a, b, c
+        obj = root
+        path = self._ref.split(".")
+        for p in path:
+            obj = obj._children[p]
+
+        return obj
+
+    def pack(self):
+        children = self._get_children()
+        self._field.value = self._func(children.pack())
+        return self._field.pack()
+
+    @property
+    def value(self):
+        children = self._get_children()
+        self._field.value = self._func(children.pack())
+        return self._field.value
+
+    def __str__(self):
+        return self.pretty_print()
+
+    def pretty_print(self, indent=0):
+        ret = " " * indent + f"+{self.name} value: 0x{self.value:0x}\n"
 
         return ret
 

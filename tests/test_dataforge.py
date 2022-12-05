@@ -245,8 +245,8 @@ class TestDFLengthRef(unittest.TestCase):
         df_test.len_data = DFContainer()
         df_test.len_data.data = DFUInt32(value=0xAABBCCDD)
         df_test.len_data.data2 = DFUInt8(value=10)
-        print(df_test.pretty_print())
-        print(df_test.pack())
+        # print(df_test.pretty_print())
+        # print(df_test.pack())
         self.assertTrue(b"\x05\x00\xdd\xcc\xbb\xaa\x0a" == df_test.pack())
 
         df_test = DFContainer()
@@ -266,65 +266,110 @@ class TestDFLengthRef(unittest.TestCase):
         df_test.sub1.sub2.len_data = DFContainer()
         df_test.sub1.sub2.len_data.data = DFUInt32(value=0xAABBCCDD)
         df_test.sub1.sub2.len_data.data2 = DFUInt8(value=10)
-        print(df_test.pretty_print())
-        print(df_test.pack())
+        # print(df_test.pretty_print())
+        # print(df_test.pack())
         self.assertTrue(
             b"\x11\x07\x00\x05\x00\x09\x00\x00\x00\xdd\xcc\xbb\xaa\x0a"
             == df_test.pack()
         )
 
 
-class TestPrint(unittest.TestCase):
-    """Test pretty-print"""
+def csum(data: bytes) -> int:
+    sum = 0
+    for x in data:
+        sum += x
+    return sum
+
+
+class TestDFCallableRef(unittest.TestCase):
+    """Test callable ref container"""
 
     def test(self):
-        df_test = DFUInt8(value=0x41)
-        print(df_test)
+        df_test = DFContainer()
+        df_test.len = DFCallableRef(DFUInt16(), csum, "csum_data")
+        df_test.csum_data = DFContainer()
+        df_test.csum_data.data = DFUInt32(value=0xAABBCCDD)
+        df_test.csum_data.data2 = DFUInt8(value=10)
+        # print(df_test.pretty_print())
+        # print(df_test.pack())
+        self.assertTrue(b"\x18\x03\xdd\xcc\xbb\xaa\x0a" == df_test.pack())
 
         df_test = DFContainer()
-        df_test.test = DFUInt32(value=0x1337)
-        df_test.test2 = DFUInt8(value=b"A")
-        df_test.sub = DFContainer()
-        df_test.sub.test_val = DFUInt16(value=0xAABB)
-        df_test.sub.another_sub = DFContainer()
-        df_test.sub.another_sub.sub_item = DFUInt8(value=-1)
-        df_test.sub.test = DFContainer()
-        df_test.sub.another_sub.out_of_order = DFUInt16(value=0x1122)
-        df_test.sub.test.deep_value = DFUInt32(value=1337)
-        df_test.sub.test.sub_sub = DFContainer()
-        df_test.sub.test.sub_sub.deep_value = DFUInt32(value=1337)
-        print(df_test)
-        print(df_test.pack())
-
-        print("")
-        df_test = DFContainer()
-        df_test.add("test", DFUInt32(value=0x1337))
-        df_test.add("test2", DFUInt8(value=b"A"))
-        df_test.add("sub", DFContainer())
-        df_test.add("sub.test_val", DFUInt16(value=0xAABB))
-        df_test.add("sub.another_sub", DFContainer())
-        df_test.add("sub.another_sub.sub_item", DFUInt8(value=1))
-        df_test.add("sub.another_sub.sub_item2", DFUInt8(value=2))
-        df_test.add("sub.test.sub_sub", DFContainer())
-        df_test.add("sub.test.sub_sub.deep_value", DFUInt32(value=0xEEFF))
-        print(df_test)
-        print(df_test.pack())
+        df_test.len = DFCallableRef(DFUInt16(endian=DFEndian.BIG), csum, "csum_data")
+        df_test.csum_data = DFContainer()
+        df_test.csum_data.data = DFUInt32(value=0xAABBCCDD)
+        df_test.csum_data.data2 = DFUInt8(value=10)
+        self.assertTrue(b"\x03\x18\xdd\xcc\xbb\xaa\x0a" == df_test.pack())
 
         df_test = DFContainer()
-        df_test.test = DFUInt32(value=0x1337)
-        df_test.test2 = DFUInt8(value=b"A")
-        df_test.sub = DFLength(DFUInt32(), DFContainer())
-        df_test.sub.test_val = DFUInt16(value=0xAABB)
-        df_test.sub.another_sub = DFContainer()
-        df_test.sub.another_sub.sub_item = DFUInt8(value=-1)
-        df_test.sub.test = DFContainer()
-        df_test.sub.another_sub.out_of_order = DFUInt16(value=0x1122)
-        df_test.sub.test.deep_value = DFUInt32(value=1337)
-        df_test.sub.test.sub_sub = DFContainer()
-        df_test.sub.test.sub_sub.deep_value = DFUInt32(value=1337)
-        df_test.sub.buf = DFBuffer(value=b"A" * 100)
-        print(df_test)
-        print(df_test.pack())
+        df_test.something = DFUInt8(value=0x11)
+        df_test.sub1 = DFContainer()
+        df_test.sub1.thing1 = DFUInt16(value=7)
+        df_test.sub1.len = DFCallableRef(DFUInt16(), csum, "sub1.sub2.csum_data")
+        df_test.sub1.thing2 = DFUInt32(value=9)
+        df_test.sub1.sub2 = DFContainer()
+        df_test.sub1.sub2.csum_data = DFContainer()
+        df_test.sub1.sub2.csum_data.data = DFUInt32(value=0xAABBCCDD)
+        df_test.sub1.sub2.csum_data.data2 = DFUInt8(value=10)
+        # print(df_test.pretty_print())
+        # print(df_test.pack())
+        self.assertTrue(
+            b"\x11\x07\x00\x18\x03\x09\x00\x00\x00\xdd\xcc\xbb\xaa\x0a"
+            == df_test.pack()
+        )
+
+
+# class TestPrint(unittest.TestCase):
+#     """Test pretty-print"""
+
+#     def test(self):
+#         df_test = DFUInt8(value=0x41)
+#         print(df_test)
+
+#         df_test = DFContainer()
+#         df_test.test = DFUInt32(value=0x1337)
+#         df_test.test2 = DFUInt8(value=b"A")
+#         df_test.sub = DFContainer()
+#         df_test.sub.test_val = DFUInt16(value=0xAABB)
+#         df_test.sub.another_sub = DFContainer()
+#         df_test.sub.another_sub.sub_item = DFUInt8(value=-1)
+#         df_test.sub.test = DFContainer()
+#         df_test.sub.another_sub.out_of_order = DFUInt16(value=0x1122)
+#         df_test.sub.test.deep_value = DFUInt32(value=1337)
+#         df_test.sub.test.sub_sub = DFContainer()
+#         df_test.sub.test.sub_sub.deep_value = DFUInt32(value=1337)
+#         print(df_test)
+#         print(df_test.pack())
+
+#         print("")
+#         df_test = DFContainer()
+#         df_test.add("test", DFUInt32(value=0x1337))
+#         df_test.add("test2", DFUInt8(value=b"A"))
+#         df_test.add("sub", DFContainer())
+#         df_test.add("sub.test_val", DFUInt16(value=0xAABB))
+#         df_test.add("sub.another_sub", DFContainer())
+#         df_test.add("sub.another_sub.sub_item", DFUInt8(value=1))
+#         df_test.add("sub.another_sub.sub_item2", DFUInt8(value=2))
+#         df_test.add("sub.test.sub_sub", DFContainer())
+#         df_test.add("sub.test.sub_sub.deep_value", DFUInt32(value=0xEEFF))
+#         print(df_test)
+#         print(df_test.pack())
+
+#         df_test = DFContainer()
+#         df_test.test = DFUInt32(value=0x1337)
+#         df_test.test2 = DFUInt8(value=b"A")
+#         df_test.sub = DFLength(DFUInt32(), DFContainer())
+#         df_test.sub.test_val = DFUInt16(value=0xAABB)
+#         df_test.sub.another_sub = DFContainer()
+#         df_test.sub.another_sub.sub_item = DFUInt8(value=-1)
+#         df_test.sub.test = DFContainer()
+#         df_test.sub.another_sub.out_of_order = DFUInt16(value=0x1122)
+#         df_test.sub.test.deep_value = DFUInt32(value=1337)
+#         df_test.sub.test.sub_sub = DFContainer()
+#         df_test.sub.test.sub_sub.deep_value = DFUInt32(value=1337)
+#         df_test.sub.buf = DFBuffer(value=b"A" * 100)
+#         print(df_test)
+#         print(df_test.pack())
 
 
 if __name__ == "__main__":
