@@ -49,8 +49,7 @@ class DFBasicDataType(abc.ABC):
 
 
 class DFUInt8(DFBasicDataType):
-    """Unsigned int 8-bi
-    t"""
+    """Unsigned int 8-bit"""
 
     def __init__(self, value=0):
         self._fmt = "B"
