@@ -49,8 +49,7 @@ class DFBasicDataType(abc.ABC):
 
 
 class DFUInt8(DFBasicDataType):
-    """Unsigned int 8-bi
-    t"""
+    """Unsigned int 8-bit"""
 
     def __init__(self, value=0):
         self._fmt = "B"
@@ -240,6 +239,7 @@ class DFContainer(DFBasicDataType):
     def __init__(self):
         self._children = OrderedDict()
         self._name = None
+        self._parent = None
 
     @property
     def name(self):
@@ -249,8 +249,17 @@ class DFContainer(DFBasicDataType):
     def name(self, name):
         self._name = name
 
+    @property
+    def parent(self):
+        return self._parent
+
+    @parent.setter
+    def parent(self, parent):
+        self._parent = parent
+
     def add(self, name, obj):
         root = name
+        obj._parent = self
         sub_container = None
         logging.debug(name)
         if "." in root:
@@ -395,6 +404,96 @@ class DFLength(DFContainer):
                     + f" : {child} "
                     + "\n"
                 )
+        return ret
+
+
+class DFLengthRef(DFContainer):
+    """Length counted container, referencing another part of the tree"""
+
+    def __init__(self, field, container_ref):
+        super().__init__()
+        self._field = field
+        self._ref = container_ref
+        # self._children["_data"] = container_ref
+
+    def _get_root(self, obj) -> DFBasicDataType:
+        if obj.parent is None:
+            return obj
+        return self._get_root(obj.parent)
+
+    def _get_children(self):
+        """Returns the length someones children"""
+        root = self._get_root(self)
+        # a.b.c -> a, b, c
+        obj = root
+        path_parts = self._ref.split(".")
+        for part in path_parts:
+            obj = obj._children[part]
+
+        return obj
+
+    def pack(self):
+        children = self._get_children()
+        self._field.value = len(children.pack())
+        return self._field.pack()
+
+    @property
+    def value(self):
+        children = self._get_children()
+        self._field.value = len(children.pack())
+        return self._field.value
+
+    def __str__(self):
+        return self.pretty_print()
+
+    def pretty_print(self, indent=0):
+        ret = " " * indent + f"+{self.name} length: 0x{self.value:0x}\n"
+
+        return ret
+
+
+class DFCallableRef(DFContainer):
+    """Compute a field based on a reference to a branch and a callable"""
+
+    def __init__(self, field, func, container_ref):
+        super().__init__()
+        self._field = field
+        self._func = func
+        self._ref = container_ref
+
+    def _get_root(self, obj) -> DFBasicDataType:
+        if obj.parent is None:
+            return obj
+        return self._get_root(obj.parent)
+
+    def _get_children(self):
+        """Returns children of the branch referred to"""
+        root = self._get_root(self)
+        # a.b.c -> a, b, c
+        obj = root
+        path_parts = self._ref.split(".")
+        for part in path_parts:
+            obj = obj._children[part]
+
+        return obj
+
+    def pack(self):
+        children = self._get_children()
+        self._field.value = self._func(children.pack())
+        return self._field.pack()
+
+    @property
+    def value(self):
+        children = self._get_children()
+        self._field.value = self._func(children.pack())
+        return self._field.value
+
+    def __str__(self):
+        return self.pretty_print()
+
+    def pretty_print(self, indent=0):
+        ret = " " * indent + f"+{self.name} value: 0x{self.value:0x}\n"
+
         return ret
 
 

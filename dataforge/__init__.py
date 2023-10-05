@@ -1,9 +1,11 @@
 """DataForge Module imports"""
 from .dataforge import (
     DFBuffer,
+    DFCallableRef,
     DFContainer,
     DFEndian,
     DFLength,
+    DFLengthRef,
     DFSInt8,
     DFSInt16,
     DFSInt32,
@@ -17,6 +19,8 @@ __all__ = [
     "DFContainer",
     "DFEndian",
     "DFLength",
+    "DFLengthRef",
+    "DFCallableRef",
     "DFSInt8",
     "DFSInt16",
     "DFSInt32",
