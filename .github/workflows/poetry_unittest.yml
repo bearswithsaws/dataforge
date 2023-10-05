@@ -24,11 +24,11 @@ jobs:
       # number in the cache key, and the "-0" suffix: this allows you to invalidate the cache
       # manually if/when you want to upgrade Poetry, or if something goes wrong. This could be
       # mildly cleaner by using an environment variable, but I don't really care.
-      - name: cache poetry install
-        uses: actions/cache@v2
-        with:
-          path: ~/.local
-          key: poetry-1.6.1-1
+      # - name: cache poetry install
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: ~/.local
+      #     key: poetry-1.6.1-1
 
       # Install Poetry. You could do this manually, or there are several actions that do this.
       # `snok/install-poetry` seems to be minimal yet complete, and really just calls out to
