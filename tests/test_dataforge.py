@@ -1,3 +1,4 @@
+# pylint: disable=too-few-public-methods
 """DataForge test suite
 """
 import pytest
@@ -275,10 +276,10 @@ class TestDFLengthRef():
 
 
 def csum(data: bytes) -> int:
-    csum = 0
-    for x in data:
-        csum += x
-    return csum
+    checksum = 0
+    for value in data:
+        checksum += value
+    return checksum
 
 
 class TestDFCallableRef():

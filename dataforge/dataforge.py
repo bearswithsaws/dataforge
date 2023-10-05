@@ -426,9 +426,9 @@ class DFLengthRef(DFContainer):
         root = self._get_root(self)
         # a.b.c -> a, b, c
         obj = root
-        path = self._ref.split(".")
-        for p in path:
-            obj = obj._children[p]
+        path_parts = self._ref.split(".")
+        for part in path_parts:
+            obj = obj._children[part]
 
         return obj
 
@@ -471,9 +471,9 @@ class DFCallableRef(DFContainer):
         root = self._get_root(self)
         # a.b.c -> a, b, c
         obj = root
-        path = self._ref.split(".")
-        for p in path:
-            obj = obj._children[p]
+        path_parts = self._ref.split(".")
+        for part in path_parts:
+            obj = obj._children[part]
 
         return obj
 
