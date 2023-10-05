@@ -11,19 +11,19 @@ class TestDFUInt8():
 
     def test(self):
         df_test = DFUInt8(value=0xFF)
-        self.assertTrue(b"\xff" == df_test.pack())
+        assert(b"\xff" == df_test.pack())
 
         df_test = DFUInt8(value=b"\xaa")
-        self.assertTrue(b"\xaa" == df_test.pack())
+        assert(b"\xaa" == df_test.pack())
 
-        with self.assertRaises(DFRangeException):
+        with pytest.raises(DFRangeException):
             DFUInt8(value=b"abc")
 
         # Test that too large of a value is truncated
         df_test = DFUInt8(value=0x105)
-        self.assertTrue(b"\x05" == df_test.pack())
+        assert(b"\x05" == df_test.pack())
 
-        self.assertTrue(df_test.length == 1)
+        assert(df_test.length == 1)
 
 
 class TestDFSInt8():
@@ -31,19 +31,19 @@ class TestDFSInt8():
 
     def test(self):
         df_test = DFSInt8(value=-1)
-        self.assertTrue(b"\xff" == df_test.pack())
+        assert(b"\xff" == df_test.pack())
 
         df_test = DFSInt8(value=b"\x7f")
-        self.assertTrue(b"\x7f" == df_test.pack())
+        assert(b"\x7f" == df_test.pack())
 
-        with self.assertRaises(DFRangeException):
+        with pytest.raises(DFRangeException):
             df_test = DFSInt8(value=b"abc")
 
         # Test that too large of a value is truncated
         df_test = DFSInt8(value=-0x105)
-        self.assertTrue(b"\xfb" == df_test.pack())
+        assert(b"\xfb" == df_test.pack())
 
-        self.assertTrue(df_test.length == 1)
+        assert(df_test.length == 1)
 
 
 class TestDFUInt16():
@@ -51,28 +51,28 @@ class TestDFUInt16():
 
     def test(self):
         df_test = DFUInt16(value=0x1234)
-        self.assertTrue(b"\x34\x12" == df_test.pack())
+        assert(b"\x34\x12" == df_test.pack())
 
         df_test = DFUInt16(value=0x1234, endian=DFEndian.BIG)
-        self.assertTrue(b"\x12\x34" == df_test.pack())
+        assert(b"\x12\x34" == df_test.pack())
 
         df_test = DFUInt16(value=b"\xbb\xaa", endian=DFEndian.LITTLE)
-        self.assertTrue(b"\xbb\xaa" == df_test.pack())
+        assert(b"\xbb\xaa" == df_test.pack())
 
         df_test = DFUInt16(value=b"\xbb\xaa", endian=DFEndian.BIG)
-        self.assertTrue(b"\xaa\xbb" == df_test.pack())
+        assert(b"\xaa\xbb" == df_test.pack())
 
         df_test = DFUInt16(value=1, endian=DFEndian.LITTLE)
-        self.assertTrue(b"\x01\x00" == df_test.pack())
+        assert(b"\x01\x00" == df_test.pack())
 
-        with self.assertRaises(DFRangeException):
+        with pytest.raises(DFRangeException):
             df_test = DFUInt16(value=b"abcd")
 
         # Test that too large of a value is truncated
         df_test = DFUInt16(value=0x100000005)
-        self.assertTrue(b"\x05\x00" == df_test.pack())
+        assert(b"\x05\x00" == df_test.pack())
 
-        self.assertTrue(df_test.length == 2)
+        assert(df_test.length == 2)
 
 
 class TestDFSInt16():
@@ -80,25 +80,25 @@ class TestDFSInt16():
 
     def test(self):
         df_test = DFSInt16(value=0x1234)
-        self.assertTrue(b"\x34\x12" == df_test.pack())
+        assert(b"\x34\x12" == df_test.pack())
 
         df_test = DFSInt16(value=0x1234, endian=DFEndian.BIG)
-        self.assertTrue(b"\x12\x34" == df_test.pack())
+        assert(b"\x12\x34" == df_test.pack())
 
         df_test = DFSInt16(value=b"\xbb\x7f", endian=DFEndian.LITTLE)
-        self.assertTrue(b"\xbb\x7f" == df_test.pack())
+        assert(b"\xbb\x7f" == df_test.pack())
 
         df_test = DFSInt16(value=b"\xbb\x7f", endian=DFEndian.BIG)
-        self.assertTrue(b"\x7f\xbb" == df_test.pack())
+        assert(b"\x7f\xbb" == df_test.pack())
 
-        with self.assertRaises(DFRangeException):
+        with pytest.raises(DFRangeException):
             df_test = DFSInt16(value=b"abcd")
 
         # Test that too large of a value is truncated
         df_test = DFSInt16(value=-0x10005)
-        self.assertTrue(b"\xfb\xff" == df_test.pack())
+        assert(b"\xfb\xff" == df_test.pack())
 
-        self.assertTrue(df_test.length == 2)
+        assert(df_test.length == 2)
 
 
 class TestDFUInt32():
@@ -106,25 +106,25 @@ class TestDFUInt32():
 
     def test(self):
         df_test = DFUInt32(value=0x12345678)
-        self.assertTrue(b"\x78\x56\x34\x12" == df_test.pack())
+        assert(b"\x78\x56\x34\x12" == df_test.pack())
 
         df_test = DFUInt32(value=0x12345678, endian=DFEndian.BIG)
-        self.assertTrue(b"\x12\x34\x56\x78" == df_test.pack())
+        assert(b"\x12\x34\x56\x78" == df_test.pack())
 
         df_test = DFUInt32(value=b"\xdd\xcc\xbb\xaa", endian=DFEndian.LITTLE)
-        self.assertTrue(b"\xdd\xcc\xbb\xaa" == df_test.pack())
+        assert(b"\xdd\xcc\xbb\xaa" == df_test.pack())
 
         df_test = DFUInt32(value=b"\xdd\xcc\xbb\xaa", endian=DFEndian.BIG)
-        self.assertTrue(b"\xaa\xbb\xcc\xdd" == df_test.pack())
+        assert(b"\xaa\xbb\xcc\xdd" == df_test.pack())
 
-        with self.assertRaises(DFRangeException):
+        with pytest.raises(DFRangeException):
             df_test = DFUInt32(value=b"abcdef")
 
         # Test that too large of a value is truncated
         df_test = DFUInt32(value=0x100000005)
-        self.assertTrue(b"\x05\x00\x00\x00" == df_test.pack())
+        assert(b"\x05\x00\x00\x00" == df_test.pack())
 
-        self.assertTrue(df_test.length == 4)
+        assert(df_test.length == 4)
 
 
 class TestDFSInt32():
@@ -132,11 +132,11 @@ class TestDFSInt32():
 
     def test(self):
         df_test = DFSInt32(value=-1)
-        self.assertTrue(b"\xff\xff\xff\xff" == df_test.pack())
+        assert(b"\xff\xff\xff\xff" == df_test.pack())
 
         # Test that too large of a value is truncated
         df_test = DFSInt32(value=-0x100000005)
-        self.assertTrue(b"\xfb\xff\xff\xff" == df_test.pack())
+        assert(b"\xfb\xff\xff\xff" == df_test.pack())
 
 
 class TestDFContainer():
@@ -145,26 +145,26 @@ class TestDFContainer():
     def test(self):
         df_test = DFContainer()
         df_test.add("test", DFUInt32(value=0x1337))
-        self.assertTrue(b"\x37\x13\x00\x00" == df_test.pack())
+        assert(b"\x37\x13\x00\x00" == df_test.pack())
 
         # Add a sub container
         df_test.add("sub", DFContainer())
-        self.assertTrue(b"\x37\x13\x00\x00" == df_test.pack())
+        assert(b"\x37\x13\x00\x00" == df_test.pack())
 
         df_test.add("sub.test_sub_container", DFContainer())
-        self.assertTrue(b"\x37\x13\x00\x00" == df_test.pack())
+        assert(b"\x37\x13\x00\x00" == df_test.pack())
 
         df_test.add("sub.test_sub_container.test", DFUInt16(value=0xAABB))
-        self.assertTrue(b"\x37\x13\x00\x00\xbb\xaa" == df_test.pack())
+        assert(b"\x37\x13\x00\x00\xbb\xaa" == df_test.pack())
 
         df_test.add("sub.test_sub_container.another", DFUInt16(value=0xCCDD))
-        self.assertTrue(b"\x37\x13\x00\x00\xbb\xaa\xdd\xcc" == df_test.pack())
+        assert(b"\x37\x13\x00\x00\xbb\xaa\xdd\xcc" == df_test.pack())
 
         df_test.add("upper", DFUInt8(value=b"A"))
-        self.assertTrue(b"\x37\x13\x00\x00\xbb\xaa\xdd\xcc\x41" == df_test.pack())
+        assert(b"\x37\x13\x00\x00\xbb\xaa\xdd\xcc\x41" == df_test.pack())
 
         df_test.add("sub.inner_insert", DFUInt8(value=b"B"))
-        self.assertTrue(b"\x37\x13\x00\x00\xbb\xaa\xdd\xcc\x42\x41" == df_test.pack())
+        assert(b"\x37\x13\x00\x00\xbb\xaa\xdd\xcc\x42\x41" == df_test.pack())
 
         df_test = DFContainer()
         df_test.test = DFUInt32(value=0x1337)
@@ -186,26 +186,26 @@ class TestDFContainerShorthand():
         # Shorthand
         df_test = DFContainer()
         df_test.test = DFUInt32(value=0x1337)
-        self.assertTrue(b"\x37\x13\x00\x00" == df_test.pack())
+        assert(b"\x37\x13\x00\x00" == df_test.pack())
 
         # Add a sub caontianer
         df_test.sub = DFContainer()
-        self.assertTrue(b"\x37\x13\x00\x00" == df_test.pack())
+        assert(b"\x37\x13\x00\x00" == df_test.pack())
 
         df_test.sub.test_sub_container = DFContainer()
-        self.assertTrue(b"\x37\x13\x00\x00" == df_test.pack())
+        assert(b"\x37\x13\x00\x00" == df_test.pack())
 
         df_test.sub.test_sub_container.test = DFUInt16(value=0xAABB)
-        self.assertTrue(b"\x37\x13\x00\x00\xbb\xaa" == df_test.pack())
+        assert(b"\x37\x13\x00\x00\xbb\xaa" == df_test.pack())
 
         df_test.sub.test_sub_container.another = DFUInt16(value=0xCCDD)
-        self.assertTrue(b"\x37\x13\x00\x00\xbb\xaa\xdd\xcc" == df_test.pack())
+        assert(b"\x37\x13\x00\x00\xbb\xaa\xdd\xcc" == df_test.pack())
 
         df_test.upper = DFUInt8(value=b"A")
-        self.assertTrue(b"\x37\x13\x00\x00\xbb\xaa\xdd\xcc\x41" == df_test.pack())
+        assert(b"\x37\x13\x00\x00\xbb\xaa\xdd\xcc\x41" == df_test.pack())
 
         df_test.sub.inner_insert = DFUInt8(value=b"B")
-        self.assertTrue(b"\x37\x13\x00\x00\xbb\xaa\xdd\xcc\x42\x41" == df_test.pack())
+        assert(b"\x37\x13\x00\x00\xbb\xaa\xdd\xcc\x42\x41" == df_test.pack())
 
         df_test = DFContainer()
         df_test.add("test", DFUInt32(value=0x1337))
@@ -227,13 +227,13 @@ class TestDFLength():
         df_test.len = DFLength(DFUInt16(), DFContainer())
         df_test.len.data = DFUInt32(value=0xAABBCCDD)
         df_test.len.data2 = DFUInt8(value=10)
-        self.assertTrue(b"\x05\x00\xdd\xcc\xbb\xaa\x0a" == df_test.pack())
+        assert(b"\x05\x00\xdd\xcc\xbb\xaa\x0a" == df_test.pack())
 
         df_test = DFContainer()
         df_test.len = DFLength(DFUInt16(endian=DFEndian.BIG), DFContainer())
         df_test.len.data = DFUInt32(value=0xAABBCCDD)
         df_test.len.data2 = DFUInt8(value=10)
-        self.assertTrue(b"\x00\x05\xdd\xcc\xbb\xaa\x0a" == df_test.pack())
+        assert(b"\x00\x05\xdd\xcc\xbb\xaa\x0a" == df_test.pack())
 
 
 class TestDFLengthRef():
@@ -247,14 +247,14 @@ class TestDFLengthRef():
         df_test.len_data.data2 = DFUInt8(value=10)
         # print(df_test.pretty_print())
         # print(df_test.pack())
-        self.assertTrue(b"\x05\x00\xdd\xcc\xbb\xaa\x0a" == df_test.pack())
+        assert(b"\x05\x00\xdd\xcc\xbb\xaa\x0a" == df_test.pack())
 
         df_test = DFContainer()
         df_test.len = DFLengthRef(DFUInt16(endian=DFEndian.BIG), "len_data")
         df_test.len_data = DFContainer()
         df_test.len_data.data = DFUInt32(value=0xAABBCCDD)
         df_test.len_data.data2 = DFUInt8(value=10)
-        self.assertTrue(b"\x00\x05\xdd\xcc\xbb\xaa\x0a" == df_test.pack())
+        assert(b"\x00\x05\xdd\xcc\xbb\xaa\x0a" == df_test.pack())
 
         df_test = DFContainer()
         df_test.something = DFUInt8(value=0x11)
@@ -268,7 +268,7 @@ class TestDFLengthRef():
         df_test.sub1.sub2.len_data.data2 = DFUInt8(value=10)
         # print(df_test.pretty_print())
         # print(df_test.pack())
-        self.assertTrue(
+        assert(
             b"\x11\x07\x00\x05\x00\x09\x00\x00\x00\xdd\xcc\xbb\xaa\x0a"
             == df_test.pack()
         )
@@ -292,14 +292,14 @@ class TestDFCallableRef():
         df_test.csum_data.data2 = DFUInt8(value=10)
         # print(df_test.pretty_print())
         # print(df_test.pack())
-        self.assertTrue(b"\x18\x03\xdd\xcc\xbb\xaa\x0a" == df_test.pack())
+        assert(b"\x18\x03\xdd\xcc\xbb\xaa\x0a" == df_test.pack())
 
         df_test = DFContainer()
         df_test.len = DFCallableRef(DFUInt16(endian=DFEndian.BIG), csum, "csum_data")
         df_test.csum_data = DFContainer()
         df_test.csum_data.data = DFUInt32(value=0xAABBCCDD)
         df_test.csum_data.data2 = DFUInt8(value=10)
-        self.assertTrue(b"\x03\x18\xdd\xcc\xbb\xaa\x0a" == df_test.pack())
+        assert(b"\x03\x18\xdd\xcc\xbb\xaa\x0a" == df_test.pack())
 
         df_test = DFContainer()
         df_test.something = DFUInt8(value=0x11)
@@ -313,7 +313,7 @@ class TestDFCallableRef():
         df_test.sub1.sub2.csum_data.data2 = DFUInt8(value=10)
         # print(df_test.pretty_print())
         # print(df_test.pack())
-        self.assertTrue(
+        assert(
             b"\x11\x07\x00\x18\x03\x09\x00\x00\x00\xdd\xcc\xbb\xaa\x0a"
             == df_test.pack()
         )
