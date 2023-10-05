@@ -419,8 +419,7 @@ class DFLengthRef(DFContainer):
     def _get_root(self, obj) -> DFBasicDataType:
         if obj.parent is None:
             return obj
-        else:
-            return self._get_root(obj.parent)
+        return self._get_root(obj.parent)
 
     def _get_children(self):
         """Returns the length someones children"""
@@ -465,8 +464,7 @@ class DFCallableRef(DFContainer):
     def _get_root(self, obj) -> DFBasicDataType:
         if obj.parent is None:
             return obj
-        else:
-            return self._get_root(obj.parent)
+        return self._get_root(obj.parent)
 
     def _get_children(self):
         """Returns children of the branch referred to"""
